@@ -18,7 +18,7 @@ public class PlayerControllerX : MonoBehaviour
     public AudioClip explodeSound;
     public AudioClip BoingSound;
 
-    Vector3 maxHigh = new Vector3(0, 14.4f, 0);
+    float YBound = 14.4f;
     public bool isMaxHigh = false;
 
 
@@ -41,16 +41,16 @@ public class PlayerControllerX : MonoBehaviour
     void Update()
     {
 
-        if (gameObject.transform.position.y < maxHigh.y)
-        {
-            isMaxHigh = false;
-        }
+        MovePlayer();
+        ConstraintPlayerPosition();
+       
 
-        if (gameObject.transform.position.y > maxHigh.y)
-        {
-            isMaxHigh = true;
-        }
+      
+    }
 
+    //Jump Player based on Tap
+    void MovePlayer()
+    {
         // While space is pressed and player is low enough, float up
         if (Input.GetKey(KeyCode.Space) && !gameOver && !isMaxHigh)
         {
@@ -60,9 +60,26 @@ public class PlayerControllerX : MonoBehaviour
 
 
         }
-
-      
     }
+
+
+    //Prevent the player for leaving top
+
+    void ConstraintPlayerPosition()
+    {
+
+        if (transform.position.y < YBound)
+        {
+            isMaxHigh = false;
+        }
+
+        if (gameObject.transform.position.y > YBound)
+        {
+            isMaxHigh = true;
+            transform.position = new Vector3(transform.position.x, YBound, transform.position.z);
+        }
+    }
+
 
 
     private void OnCollisionEnter(Collision other)
